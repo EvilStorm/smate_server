@@ -1,0 +1,41 @@
+
+###
+GET http://localhost:2394/api/notify
+content-type: application/json
+identifyId: admin
+userId: 1
+
+###
+GET http://localhost:2394/api/notify/1
+content-type: application/json
+identifyId: admin
+userId: 1
+###
+GET http://localhost:2394/api/notify/main/0
+content-type: application/json
+identifyId: admin
+userId: 1
+
+###
+POST http://localhost:2394/api/notify
+content-type: application/json
+identifyId: admin
+userId: 1
+
+{
+    "appVer": 1,
+    "say": "버전1 업데이트가 있으니까 스토어로 갑시다.",
+    "isMustUpdate": 0
+}
+
+###
+PATCH http://localhost:2394/api/notify
+content-type: application/json
+identifyId: admin
+userId: 1
+
+{
+    "id": 1,
+    "message": "업데이트가 있으니까 스토어로 갑시다.22",
+    "nessesary": 0
+}

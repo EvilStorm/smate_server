@@ -1,0 +1,29 @@
+{
+  "name": "com.hj.smate",
+  "version": "0.0.1",
+  "description": "Find shopping mate",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon app.js"
+  },
+  "author": "e",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.10",
+    "morgan": "^1.10.0",
+    "moment-timezone": "^0.5.31",
+    "nodemailer": "^6.4.3"
+  },
+  "devDependencies": {
+    "yamljs": "^0.3.0",
+    "js-yaml": "^3.13.1",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.1.1"
+  }
+}
