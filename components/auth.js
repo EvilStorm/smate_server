@@ -18,7 +18,7 @@ auth.isSignIn = function(req, res, next) {
   } else {
     req.decoded = {
       token: token,
-      id: Number(userId),
+      id: userId,
     };
   
     console.log("req.decoded" )

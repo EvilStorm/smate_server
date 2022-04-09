@@ -1,0 +1,16 @@
+###
+GET http://localhost:2394/api/setting
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+
+###
+POST http://localhost:2394/api/setting
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+{
+    
+}

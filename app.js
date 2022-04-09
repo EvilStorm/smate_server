@@ -53,9 +53,13 @@ app.use(function (req, res, next) {
 app.use('/docs/', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 
+app.use('/api/init', require('./routers/app_start'));
 app.use('/api/appVersion', require('./routers/app_version'));
 app.use('/api/notify', require('./routers/notify'));
 app.use('/api/term', require('./routers/term'));
+app.use('/api/sign', require('./routers/sign'));
+app.use('/api/setting', require('./routers/setting'));
+app.use('/api/user', require('./routers/user'));
 
 app.use(exceptionHandler)
 

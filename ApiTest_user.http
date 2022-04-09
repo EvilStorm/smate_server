@@ -1,0 +1,6 @@
+
+###
+GET http://localhost:2394/api/user/me
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f

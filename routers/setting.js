@@ -2,11 +2,10 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../components/Auth');
 
-var ModelSetting = require('../models/Setting');
-var response = require('../components/RespUtil');
-
-var {ResponseCode } = require('../components/RespCodeStore');
-var {ExceptionType, createException, convertException} = require('../components/ExceptionCreator');
+var ModelSetting = require('../models/model_setting');
+var response = require('../components/response_util');
+var {ResponseCode } = require('../components/response_code_store');
+var {ExceptionType, createException, convertException} = require('../components/exception_creator');
 
 
 router.get("/", auth.isSignIn, (req, res) => {
