@@ -4,7 +4,7 @@ var router = express.Router();
 var ModelAppVersion = require('../models/model_app_version');
 var response = require('../components/response_util');
 
-var auth = require('../components/Auth');
+var auth = require('../components/auth');
 var {ResponseCode } = require('../components/response_code_store');
 var {ExceptionType, createException, convertException} = require('../components/exception_creator');
 
