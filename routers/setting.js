@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var auth = require('../components/Auth');
+var auth = require('../components/auth');
 
 var ModelSetting = require('../models/model_setting');
 var response = require('../components/response_util');
