@@ -20,6 +20,9 @@ const schema = new Schema({
     hasAward: {type: Number, default: 0},
     setting: {type: Schema.Types.ObjectId, ref: 'Setting', default:null},
     dress: [{type: Schema.Types.ObjectId, ref: 'Dress'}],
+    reportDress: [{type: Schema.Types.ObjectId, ref: 'Dress'}],
+    blockUser: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    reply: [{type: Schema.Types.ObjectId, ref: 'Reply'}],
     likeDress: [{type: Schema.Types.ObjectId, ref: 'Dress'}],
     createdAt: {type: Date, default: Date.now}
 }, {
