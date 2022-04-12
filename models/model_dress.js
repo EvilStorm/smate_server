@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 const schema = new Schema({
     owner: {type: Schema.Types.ObjectId, ref: 'User', index: true,},
-    images: {type: Object},
+    images: [{type: String}],
     say: {type: String},
     isAward: {type: Boolean, default: false},
     tags: [{type: Schema.Types.ObjectId, ref: 'Tag', index: true}],

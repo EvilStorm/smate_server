@@ -7,6 +7,19 @@ const { header } = require('express/lib/request');
 auth = {}
 
 
+
+auth.signCondition = function(req, res, next) {
+
+  var token = req.headers['identifyid'];
+  var userId = req.headers['userid'];
+  req.decoded = {
+    token: token,
+    id: userId,
+  };
+  
+  next();
+}
+
 auth.isSignIn = function(req, res, next) {
 
   var token = req.headers['identifyid'];
@@ -20,9 +33,6 @@ auth.isSignIn = function(req, res, next) {
       token: token,
       id: userId,
     };
-  
-    console.log("req.decoded" )
-    console.log(req.decoded )
     
     next();
   }
@@ -30,10 +40,7 @@ auth.isSignIn = function(req, res, next) {
 
 auth.isAdmin = function(req, res, next) {
 
-  console.log(`headers: ${JSON.stringify(req.headers)}`)
-
   var token = req.headers['identifyid'];
-  console.log(`TOKEN: ${token}`)
   if(token != null && token == 'admin') {
     req.decoded = {
       token: req.headers['identifyid'],
@@ -43,7 +50,6 @@ auth.isAdmin = function(req, res, next) {
   } else {
     var error = createException(ExceptionType.REQUIRED_JWT_TOKEN);
     res.json(response.fail(error, error.errmsg, error.code));
-
   }
 }
 

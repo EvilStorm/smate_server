@@ -1,6 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var util = require('../components/response_util');
+var mongoose = require('mongoose');
+var response = require('../components/response_util');
+var {ResponseCode } = require('../components/response_code_store');
+var {ExceptionType, createException, convertException} = require('../components/exception_creator');
+
+var auth = require('../components/auth');
+var DBConst = require('../db/constant');
 var ModelDress = require('../models/model_dress');
 var TagHandler = require('./components/tag_handler');
 var ModelUser = require('../models/model_user');
@@ -25,16 +31,29 @@ router.get("/count/:count", (req, res) => {
     })
 });
 
-router.get("/detail/:id", (req, res) => {
-    ModelDress.findById(req.params.id)
+router.get("/detail/:id", auth.signCondition, (req, res) => {
+    
+    DressAdapter.getDress(
+        req.decoded.id,
+        {
+            $and: [
+                {_id: mongoose.Types.ObjectId(req.params.id)},
+                {isShow: true},
+            ]
+        },
+        req.params.page,
+
+    )
     .then((_) => res.json(response.success({dress: _})))
     .catch((_) => {
+        console.log(` error!!!! ${JSON.stringify(_)}`);
         var error = convertException(_);
         res.json(response.fail(error, error.errmsg, error.code));
     })
+
 })
 
-router.get('/user/:id/:page', auth.isSignIn, (req, res) => {
+router.get('/user/:id/:page', auth.signCondition, (req, res) => {
     DressAdapter.getDress(
         req.decoded.id,
         {
@@ -53,7 +72,45 @@ router.get('/user/:id/:page', auth.isSignIn, (req, res) => {
     })
 });
 
-router.get('/sample/user/:id/:page', auth.isSignIn, (req, res) => {
+/**
+ * 사용자 드레스 가져오기 
+ * timestamp를 기준으로 다음 등록된 것들만 카운트 한다. 
+ * 
+ * 내가 최초(page=0) 이후에 등록된 항목으로 순서 변경을 막기 위함. 
+ * ex) PAGE_COUNT갯수 만큼 가져간 후 누군가 하나를 등록했을 때 
+ * 다음 PAGE_COUNT 갯수 만큼 가져간다면 이전 마지막 드레스가 다음에 포함된다. 
+ */
+router.get("/user/:id/:sortType/:page", auth.signCondition, (req, res) => {
+    const sort = req.params.sortType == 'LIKE'
+    ?{
+        favoritePoint: -1,
+    }
+    :{
+        createdAt: -1
+    }
+
+    DressAdapter.getDress(
+        req.decoded.id, 
+        {
+            $and: [
+              {ownerId: mongoose.Types.ObjectId(req.params.id)},
+              {isShow: true},
+            ]
+        },
+        req.params.page,
+        DBConst.PAGE_COUNT,
+        sort
+    )
+    .then(_ => {
+        res.json(response.success({dress: _}));
+    })
+    .catch(_ => {
+        var error = convertException(_);
+        res.json(response.fail(error, error.errmsg, error.code));
+    });
+});
+
+router.get('/sample/user/:id/:page', auth.signCondition, (req, res) => {
     ModelDress
         .find({owner: req.params.id})
         .limit(30)
@@ -69,12 +126,12 @@ router.post('/', auth.isSignIn, function (req, res) {
     const model = new ModelDress();
     model.say = req.body.say;
     model.images = req.body.images;
-    model.owner = req.body.owner;
+    model.owner = req.decoded.id;
 
     model.save()
     .then(cursor => {
 
-        ModelUser.findById(req.body.owner)
+        ModelUser.findById(req.decoded.id)
         .then(user => {
             user.dress.unshift(cursor._id)
             user.save()
@@ -97,6 +154,30 @@ router.post('/', auth.isSignIn, function (req, res) {
         res.json(response.fail(error, error.errmsg, error.code));
     });   
 });
+
+
+function getDress(res, userId, dressId)  {
+    DressAdapter.getDress(
+        userId, 
+        {
+            $and: [
+              {_id: mongoose.Types.ObjectId(dressId)},
+              {isShow: true},
+            ]
+        },
+        0, 1, {createdAt: -1}
+
+    )
+    .then((_) => {
+        // console.log("GET Dress Response : ");
+        // console.log(_);
+        res.json(response.success({dress: _}));
+    })
+    .catch((err) => {
+        var error = convertException(_);
+        res.json(response.fail(error, error.errmsg, error.code));
+    })
+}
 
 async function sendLikePush(dressId) {
     var dress = await ModelDress.findById(dressId)

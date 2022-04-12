@@ -1,6 +1,6 @@
-var ModelTag = require('../models/model_tag');
-var ModelTagUseMap = require('../models/model_use_map');
-var ModelDress = require('../models/dress');
+var ModelTag = require('../../models/model_tag');
+var ModelTagUseMap = require('../../models/model_tag_use_map');
+var ModelDress = require('../../models/model_dress');
 
 
 async function postTags(dressId, userId, tags) {

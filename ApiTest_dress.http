@@ -1,0 +1,32 @@
+
+
+###
+GET http://localhost:2394/api/dress/count/2
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+
+###
+GET http://localhost:2394/api/dress/detail/625557ae6257cfa39062607c
+content-type: application/json
+# identifyId: zxkcjhiqwuezxd
+# userId: 62511605a0503d749f3c647f
+
+###
+GET http://localhost:2394/api/dress/user/62511605a0503d749f3c647f/DATE/0
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+###
+POST http://localhost:2394/api/dress
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+{
+    "images" : ["https://smate.s3.ap-northeast-2.amazonaws.com/sample_female_semi_formal_1.jpeg", "https://smate.s3.ap-northeast-2.amazonaws.com/sample_female_semi_formal_2.jpeg"],
+    "say": "오늘은 산듯하게 #봄#출근룩#러블리",
+    "tags": ["봄", "출근룩", "러블리"]
+}
