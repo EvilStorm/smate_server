@@ -1,0 +1,17 @@
+###
+POST http://localhost:2394/api/reply
+content-type: application/json
+identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
+userId: 6256d1101014841df59a4975
+
+{
+    "owner": "6256d1101014841df59a4975",
+    "parent": "6256d24b9f2ca2c1716a19b5",
+    "say": "옷 이쁘네요!"
+}
+
+###
+GET http://localhost:2394/api/reply/dress/6256d24b9f2ca2c1716a19b5
+content-type: application/json
+identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
+userId: 6256d1101014841df59a4975

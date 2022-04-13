@@ -61,6 +61,8 @@ app.use('/api/sign', require('./routers/sign'));
 app.use('/api/setting', require('./routers/setting'));
 app.use('/api/user', require('./routers/user'));
 app.use('/api/dress', require('./routers/dress'));
+app.use('/api/reply', require('./routers/reply'));
+app.use('/api/tag', require('./routers/tag'));
 
 app.use(exceptionHandler)
 

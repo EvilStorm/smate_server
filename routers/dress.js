@@ -12,6 +12,9 @@ var TagHandler = require('./components/tag_handler');
 var ModelUser = require('../models/model_user');
 var ModelLike = require('../models/model_like');
 var DressAdapter = require('./components/dress_aggr');
+var FCMCreator = require('../components/fcm_message_creator');
+var FCMSender = require('../components/fcm_sender');
+
 
 
 router.get("/count/:count", (req, res) => {

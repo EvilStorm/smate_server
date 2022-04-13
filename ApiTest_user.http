@@ -6,6 +6,13 @@ identifyId: zxkcjhiqwuezxd
 userId: 62511605a0503d749f3c647f
 
 ###
+GET http://localhost:2394/api/user/me
+content-type: application/json
+identifyId: asdkjxkiqwe
+userId: 625115dd62df69225b98e528
+
+
+###
 GET http://localhost:2394/api/user/check/nickName/haha2
 content-type: application/json
 identifyId: zxkcjhiqwuezxd
