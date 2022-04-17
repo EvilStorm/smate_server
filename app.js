@@ -63,6 +63,8 @@ app.use('/api/user', require('./routers/user'));
 app.use('/api/dress', require('./routers/dress'));
 app.use('/api/reply', require('./routers/reply'));
 app.use('/api/tag', require('./routers/tag'));
+app.use('/api/mate', require('./routers/mate'));
+app.use('/api/mateRoom', require('./routers/mate_room'));
 
 app.use(exceptionHandler)
 
