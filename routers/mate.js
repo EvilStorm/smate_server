@@ -11,12 +11,20 @@ var response = require('../components/response_util');
 var DBConst = require('../db/constant');
 var {ResponseCode } = require('../components/response_code_store');
 var {ExceptionType, createException, convertException} = require('../components/exception_creator');
+var MateAggr = require('./components/mate_aggr');
 
 
 var FCMCreator = require('../components/fcm_message_creator');
 var FCMSender = require('../components/fcm_sender');
 
-
+router.get("/detail/:mateId", (req, res) => {
+    MateAggr.getMate(req.params.mateId)
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
 router.post("", auth.isSignIn, (req, res) => {
     console.log(req.body);
 
@@ -29,6 +37,28 @@ router.post("", auth.isSignIn, (req, res) => {
     ModelMate(data)
     .save()
     .then(async (_) => {
+        var user = await ModelUser.findById(req.decoded.id);
+        user.mate.unshift(_._id);
+        await user.save();
+        
+        var mateJoin = await ModelMateJoin(
+            {
+                owner: req.decoded.id,
+                mate: _.id,
+                member: [],
+                joinMember: [],
+                deniedMember: [],
+            }
+        ).save();
+
+        console.log( ` JOIN ID : ${mateJoin._id}`)
+        var mate = await ModelMate.findById(_._id);
+        mate.member = mateJoin._id;
+
+        await mate.save();
+
+        console.log( ` SAVE : ${JSON.stringify(_)}`);
+
 
         await TagHandler.postTagsMate(_._id, _.owner, tags)
         const resposeData = await getMateDetail(_._id)
@@ -40,6 +70,57 @@ router.post("", auth.isSignIn, (req, res) => {
         res.json(response.fail(error, error.errmsg, error.code))
     });
 });
+
+router.post("/join/:mateId", auth.isSignIn, async (req, res) => {
+    // var mate = await ModelMate.findById(req.params.mateId);
+    // mate.member.push(req.decoded.id);
+    // mate
+
+    var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
+    joinMate.member.push(req.decoded.id);
+    
+    joinMate.save()
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+router.post("/separate/:mateId", auth.isSignIn, async (req, res) => {
+    var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
+
+    const index = joinMate.member.indexOf(req.decoded.id);
+    if(index > -1) {
+        joinMate.member.splice(index, 1);
+    }
+    joinMate
+    .save()
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+router.post("/accept/:mateId", auth.isSignIn, async (req, res) => {
+    var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
+
+
+    joinMate.joinMember.push(req.body.joinMemberId);
+
+
+    joinMate
+    .save()
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+
+
 
 async function getMateDetail(mateId) {
     const id = mateId;
@@ -58,6 +139,8 @@ async function getMateDetail(mateId) {
 
     });
 }
+
+
 
 router.get("/page/:page", auth.signCondition, (req, res) => {
     ModelMate.find()
