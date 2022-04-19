@@ -4,15 +4,21 @@ var mongoose = require('mongoose');
 
 var response = require('../components/response_util');
 var ModelTag = require('../models/model_tag');
-var ModelTagUseMap = require('../models/model_tag_use_map');
-var ModelDress = require('../models/model_dress');
+var ModelTagUseMap = require('../models/model_tag_use_mate_map');
+var ModelMate = require('../models/model_mate');
 var ModelUser = require('../models/model_user');
+var ModelMateJoin = require('../models/model_mate_join');
+
+
+
+
 var auth = require('../components/auth');
 var {ResponseCode } = require('../components/response_code_store');
 var {ExceptionType, createException, convertException} = require('../components/exception_creator');
 
 
 var DressAdapter = require('./components/dress_aggr');
+var MateAdapter = require('./components/mate_aggr');
 
 const PAGE_COUNT = 30;
 
@@ -66,7 +72,7 @@ router.get("/:tag", (req, res) => {
 router.get("/tagMap/detail", auth.isAdmin, (req, res) => {
     ModelTagUseMap.find()
     .populate('user')
-    .populate('dress')
+    .populate('mate')
     .populate('tag')
     .sort({createdAt: -1})
     .then(_ => {
@@ -76,6 +82,26 @@ router.get("/tagMap/detail", auth.isAdmin, (req, res) => {
         var error = convertException(_)
         res.json(response.fail(error, error.errmsg, error.code))
     });
+});
+router.get("/tagMap/detail/:id", auth.signCondition, (req, res) => {
+
+    MateAdapter.getMateDetail(
+        req.decoded.id, 
+        {
+            $and: [
+                {isShow: true},
+                {"tags._id": mongoose.Types.ObjectId(req.params.id)}
+            ]
+        },
+    )
+    .then(_ => {
+        res.json(response.success(_));
+    })
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+
 });
 
 router.get("/search/favoriate/:page", auth.isSignIn, (req, res) => {
@@ -117,9 +143,9 @@ router.get("/search/:word", (req, res) => {
 
 
 
-router.get("/search/tagId/:tagId/dress/:page", auth.isSignIn, (req, res) => {
+router.get("/search/tagId/:tagId/mate/:page", auth.signCondition, async (req, res) => {
     console.log(" req.params.tagId: " + req.params.tagId)
-    DressAdapter.getDress(
+    MateAdapter.getMateDetail(
         req.decoded.id, 
         {
             $and: [
@@ -138,9 +164,9 @@ router.get("/search/tagId/:tagId/dress/:page", auth.isSignIn, (req, res) => {
     });
 });
 
-router.get("/search/word/:word/dress/:page", auth.isSignIn, (req, res) => {
+router.get("/search/word/:word/mate/:page", auth.signCondition, (req, res) => {
     console.log(" req.params.tagId: " + req.params.tagId)
-    DressAdapter.getDress(
+    MateAdapter.getMateDetail(
         req.decoded.id,  
         {
             $and: [

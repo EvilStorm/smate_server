@@ -5,6 +5,82 @@ var ModelUser = require('../../models/model_user');
 var DBConst = require('../../db/constant');
 const ModelMateJoin = require('../../models/model_mate_join');
 
+
+async function getMateDetail(uId, match={isShow: true}, page = 0, limitCount=DBConst.PAGE_COUNT, sort={createdAt: -1}) {
+
+    var mate = await ModelMate.aggregate([
+        {
+            $lookup: {from: ModelUser.collection.name, foreignField: '_id', localField: 'owner', as: 'user'}
+        },
+        {
+            $unwind: "$user"
+        },
+        {
+            $lookup: {from: ModelTag.collection.name, foreignField: '_id', localField: 'tags', as: 'tag'}
+        },
+        {
+            $lookup: {
+                from: ModelMateJoin.collection.name, 
+                foreignField: '_id', 
+                localField: 'member', 
+                as: 'mem',
+                pipeline: [
+                    {
+                        $lookup: {from: ModelUser.collection.name, foreignField: '_id', localField: 'member', as: 'user'}
+                    },
+                    {
+                        $lookup: {from: ModelUser.collection.name, foreignField: '_id', localField: 'joinMember', as: 'jm'}
+                    },                        {
+                        $lookup: {from: ModelUser.collection.name, foreignField: '_id', localField: 'deniedMember', as: 'dm'}
+                    },                        
+                    {
+                        $project: {
+                            member: '$user',
+                            joinMember: '$jm',
+                            deniedMember: '$dm',
+                        },    
+                    },
+                ]
+            },
+        },
+        {
+            $project: {
+                id: 1,
+                title: 1,
+                images: 1,
+                message: 1,
+                memberLimit: 1,
+                locationStr: 1,
+                loc: 1,
+                isShow: 1,
+                images: 1,
+                tags: '$tag',
+                member: '$mem',
+                'owner._id': '$user._id',
+                'owner.nickName': '$user.nickName',
+                'owner.pictureMe': '$user.pictureMe',
+            }
+        },
+        {
+            $match: match  
+          },
+          {
+              $sort: sort
+          },
+          {
+              $skip: (DBConst.PAGE_COUNT * page)
+          },
+          {
+              $limit: limitCount
+          },  
+  
+    ]);
+    console.log(` mate: ${JSON.stringify(mate)}`)
+    return mate;
+
+}
+
+
 async function getMate(mateID) {
     const mId = mateID;
     return new Promise(async (resolve, reject) => {
@@ -71,10 +147,6 @@ async function getMate(mateID) {
             //         as: 'mem.deniedMember',
             //     },  
             // },
-
-            // {
-            //     $unwind: "$mem.member"
-            // },
             {
                 $project: {
                     id: 1,
@@ -100,17 +172,5 @@ async function getMate(mateID) {
 
 module.exports = {
     getMate: getMate,
+    getMateDetail: getMateDetail,
 }
-
-// owner: {type: Schema.Types.ObjectId, ref: 'User', index: true,},
-// images: [{type: String}],
-// title: {type: String},
-// message: {type: String},
-// memberLimit: {type: Number, default: 4},
-// member: {type: Schema.Types.ObjectId, ref: 'MateJoin'},
-// locationStr: {type: String},
-// loc: { type: {type:String}, coordinates: [Number]},
-// tags: [{type: Schema.Types.ObjectId, ref: 'Tag', index: true}],
-// reply: [{type: Schema.Types.ObjectId, ref: 'Reply'}],
-// isShow: {type:Boolean, default:true},
-// createdAt: {type: Date, default: Date.now}
