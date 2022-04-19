@@ -166,12 +166,16 @@ router.get("/search/tagId/:tagId/mate/:page", auth.signCondition, async (req, re
 
 router.get("/search/word/:word/mate/:page", auth.signCondition, (req, res) => {
     console.log(" req.params.tagId: " + req.params.tagId)
+
+    var searchWords = req.params.word.split(',');
+    console.log(searchWords);
+
     MateAdapter.getMateDetail(
         req.decoded.id,  
         {
             $and: [
                 {isShow: true},
-                {"tags.tag": req.params.word}
+                {"tags.tag": {$in: req.params.word.split(',')}}
             ]
         },
         req.params.page

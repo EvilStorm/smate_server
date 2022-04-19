@@ -34,7 +34,7 @@ userId: 6256d1101014841df59a4975
 
 
 ### TAG 검색 API
-GET http://localhost:2394/api/tag/search/word/봄/mate/0
+GET http://localhost:2394/api/tag/search/word/즐기자,가자가자/mate/0
 content-type: application/json
 identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
 userId: 6256d1101014841df59a4975
