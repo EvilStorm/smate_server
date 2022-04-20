@@ -119,6 +119,21 @@ router.post("/accept/:mateId", auth.isSignIn, async (req, res) => {
     });
 });
 
+router.post("/denied/:mateId", auth.isSignIn, async (req, res) => {
+    var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
+
+    joinMate.deniedMember.push(req.body.joinMemberId);
+
+
+    joinMate
+    .save()
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
 
 
 

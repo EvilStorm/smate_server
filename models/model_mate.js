@@ -9,6 +9,7 @@ const schema = new Schema({
     memberLimit: {type: Number, default: 4},
     member: {type: Schema.Types.ObjectId, ref: 'MateJoin'},
     locationStr: {type: String},
+    mateDate: {type: Date, default: Date.now},
     loc: { type: {type:String}, coordinates: [Number]},
     tags: [{type: Schema.Types.ObjectId, ref: 'Tag', index: true}],
     reply: [{type: Schema.Types.ObjectId, ref: 'Reply'}],
