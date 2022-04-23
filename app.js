@@ -65,6 +65,7 @@ app.use('/api/reply', require('./routers/reply'));
 app.use('/api/tag', require('./routers/tag'));
 app.use('/api/mate', require('./routers/mate'));
 app.use('/api/mateRoom', require('./routers/mate_room'));
+app.use('/api/briefAddr', require('./routers/brief_address'));
 
 app.use(exceptionHandler)
 

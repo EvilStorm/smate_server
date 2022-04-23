@@ -1,0 +1,30 @@
+###
+GET http://localhost:2394/api/briefAddr/dumpInert
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+###
+GET http://localhost:2394/api/briefAddr/city
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+###
+GET http://localhost:2394/api/briefAddr/gu/서울
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+###
+GET http://localhost:2394/api/briefAddr/dong/서울/은평구
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
+###
+GET http://localhost:2394/api/briefAddr/search/불
+content-type: application/json
+identifyId: zxkcjhiqwuezxd
+userId: 62511605a0503d749f3c647f
+
