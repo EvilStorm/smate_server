@@ -42,14 +42,27 @@ router.post('/', auth.isSignIn, async (req, res) => {
         await msg.save();
 
         //메시지 방 사람들에게 채팅 알림을 보낸다.
-        // var message = await FCMCreator.createMessage(room._id, FCMCreator.MessageType.CHAT);
-        // FCMSender.sendPush(message);
+        var message = await FCMCreator.createMessage(room._id, FCMCreator.MessageType.CHAT);
+        FCMSender.sendPushMulti(message);
         res.json(response.success(msg));
     } catch (e){
         console.log(e);
         var error = convertException(e)
         res.json(response.fail(error, error.errmsg, error.code))
     }
-    
 });
+
+router.post('/push/test/:roomId', async (req, res) => {
+    try {
+        //메시지 방 사람들에게 채팅 알림을 보낸다.
+        var message = await FCMCreator.createMessage(req.params.roomId, FCMCreator.MessageType.CHAT);
+        FCMSender.sendPushMulti(message);
+        res.json(response.success({result: 1}));
+    } catch (e){
+        console.log(e);
+        var error = convertException(e)
+        res.json(response.fail(error, error.errmsg, error.code))
+    }
+});
+
 module.exports = router;

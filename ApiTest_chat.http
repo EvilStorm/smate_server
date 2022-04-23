@@ -29,3 +29,9 @@ userId: 625ad4ac1014841df59a4a25
     "roomId": "62639ee25972728365d10a72",
     "message": "안녕하세요"
 }
+
+###
+POST http://localhost:2394/api/mateRoom/push/test/62639ee25972728365d10a72
+content-type: application/json
+identifyId: EsZsHQSNwGbfVvTvYagqs0Snxrz2
+userId: 625ad4ac1014841df59a4a25

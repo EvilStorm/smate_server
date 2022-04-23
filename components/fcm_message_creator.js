@@ -71,19 +71,27 @@ async function createAwardMessage(targetId, msgType) {
  * @param {Object ID} targetId 
  */
 async function createChatMessage(targetId, msgType) {
-    var result = await ModelMateRoom.findById(targetId).exec();
+    var result = await ModelMateRoom.findById(targetId)
+    .populate('member', 'pushToken')
+    .exec();
+
+    var tokenList = [];
+    for(var i=0; i<result.member.length; i++) {
+        tokenList.push(result.member[i].pushToken);
+    }
+    console.log(tokenList);
     
-    // var fcmToken = result.pushToken == null ? testToken: result.pushToken
-    // const pushInfos = {
-    //     notification: {
-    //         title: '뽄',
-    //         body: '오늘의 뽄으로 선택되었어요!!.'
-    //     },
-    //     data:{
-    //         type: msgType
-    //     },
-    //     token: fcmToken
-    // }
+    var fcmToken = result.pushToken == null ? testToken: result.pushToken
+    const pushInfos = {
+        notification: {
+            title: '메시지',
+            body: '신규 메시지가 왔어요.'
+        },
+        data:{
+            type: msgType
+        },
+        tokens: tokenList
+    }
     return pushInfos;
 }
 
