@@ -59,10 +59,23 @@ router.post("", auth.isSignIn, (req, res) => {
 
         console.log( ` SAVE : ${JSON.stringify(_)}`);
 
-
         await TagHandler.postTagsMate(_._id, _.owner, tags)
         const resposeData = await getMateDetail(_._id)
         console.log(`resposeData: ${JSON.stringify(resposeData)}`)
+
+        //채팅방 생성
+        var roomInfo = {
+            owner: req.decoded.id,
+            mate: _._id,
+            member: [req.decoded.id]
+        }
+        var room = await ModelMateRoom(roomInfo);
+        await room.save();
+        console.log( ` MateRoom : ${room._id}`)
+        //채팅방 생성 끝
+
+
+        
         res.json(response.success(resposeData))
     })
     .catch((_) => {

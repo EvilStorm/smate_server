@@ -1,5 +1,5 @@
 const ModelUser = require('../models/model_user');
-
+const ModelMateRoom = require('../models/model_mate_room');
 
 const MessageType = {
     SYSTEM: 'system',
@@ -8,6 +8,7 @@ const MessageType = {
     LIKE: 'like',
     POSTING: 'posting',
     AWARD: 'award',
+    CHAT: 'chat',
 }
 
 async function createMessage(targetId, type) {
@@ -28,6 +29,8 @@ async function createMessage(targetId, type) {
             return await createReplyMessage(targetId, type);
         case MessageType.LIKE: 
             return await createLikeMessage(targetId, type);
+        case MessageType.CHAT: 
+            return await createChatMessage(targetId, type);
         case MessageType.POSTING: 
             return await createPostingMessage(targetId, type);
     }
@@ -61,6 +64,26 @@ async function createAwardMessage(targetId, msgType) {
         },
         token: fcmToken
     }
+    return pushInfos;
+}
+/**
+ * Chat Message
+ * @param {Object ID} targetId 
+ */
+async function createChatMessage(targetId, msgType) {
+    var result = await ModelMateRoom.findById(targetId).exec();
+    
+    // var fcmToken = result.pushToken == null ? testToken: result.pushToken
+    // const pushInfos = {
+    //     notification: {
+    //         title: '뽄',
+    //         body: '오늘의 뽄으로 선택되었어요!!.'
+    //     },
+    //     data:{
+    //         type: msgType
+    //     },
+    //     token: fcmToken
+    // }
     return pushInfos;
 }
 

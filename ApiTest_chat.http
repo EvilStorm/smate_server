@@ -1,0 +1,20 @@
+
+###
+POST http://localhost:2394/api/mateRoom
+content-type: application/json
+identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
+userId: 6256d1101014841df59a4975
+
+{
+    "owner": "6256d1101014841df59a4975",
+    "roomId": "62639ee25972728365d10a72",
+    "message": "왜 안와!!!"
+}
+
+
+###
+GET http://localhost:2394/api/mateRoom/62639ee25972728365d10a72/page/0
+content-type: application/json
+identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
+userId: 6256d1101014841df59a4975
+
