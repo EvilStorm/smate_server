@@ -18,3 +18,14 @@ content-type: application/json
 identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
 userId: 6256d1101014841df59a4975
 
+###
+POST http://localhost:2394/api/mateRoom
+content-type: application/json
+identifyId: EsZsHQSNwGbfVvTvYagqs0Snxrz2
+userId: 625ad4ac1014841df59a4a25
+
+{
+    "owner": "625ad4ac1014841df59a4a25",
+    "roomId": "62639ee25972728365d10a72",
+    "message": "안녕하세요"
+}

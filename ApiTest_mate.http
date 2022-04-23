@@ -32,10 +32,10 @@ userId: 6256d1101014841df59a4975
 
 
 ###
-POST http://localhost:2394/api/mate/join/625d75925fcd1ca509692024
+POST http://localhost:2394/api/mate/join/62639ee25972728365d10a53
 content-type: application/json
-identifyId: AuRZj4QtqBegIQJxcAXlkFXsThc2
-userId: 625c28721014841df59a4a9d
+identifyId: EsZsHQSNwGbfVvTvYagqs0Snxrz2
+userId: 625ad4ac1014841df59a4a25
 
 
 ###
@@ -46,13 +46,13 @@ userId: 6252cce487194a3e052fe240
 
 
 ###
-POST http://localhost:2394/api/mate/accept/625d75925fcd1ca509692024
+POST http://localhost:2394/api/mate/accept/62639ee25972728365d10a53
 content-type: application/json
 identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
 userId: 6256d1101014841df59a4975
 
 {
-    "joinMemberId": "6252cce487194a3e052fe240"
+    "joinMemberId": "625ad4ac1014841df59a4a25"
 }
 
 

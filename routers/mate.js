@@ -118,14 +118,19 @@ router.post("/separate/:mateId", auth.isSignIn, async (req, res) => {
 
 router.post("/accept/:mateId", auth.isSignIn, async (req, res) => {
     var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
-
-
     joinMate.joinMember.push(req.body.joinMemberId);
-
 
     joinMate
     .save()
-    .then((_) => res.json(response.success(_)))
+    .then(async (_) => {
+
+        var room = await ModelMateRoom.findOne({mate: req.params.mateId});
+        console.log(`mateId: ${req.params.mateId}/// Room: ${JSON.stringify(room)}`)
+        room.member.push(req.body.joinMemberId)
+        await room.save()
+
+        res.json(response.success(_));
+    })
     .catch((_) => {
         var error = convertException(_)
         res.json(response.fail(error, error.errmsg, error.code))
