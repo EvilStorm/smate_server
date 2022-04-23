@@ -25,7 +25,7 @@ router.get('/me', auth.isSignIn, async function(req, res) {
 });
 
 
-router.get('/check/nickName/:nickName', auth.isSignIn, async function(req, res) {
+router.get('/check/nickName/:nickName',  async function(req, res) {
 
     try {
 
