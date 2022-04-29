@@ -21,6 +21,8 @@ const schema = new Schema({
     setting: {type: Schema.Types.ObjectId, ref: 'Setting', default:null},
     mate: [{type: Schema.Types.ObjectId, ref: 'Mate'}],
     mateJoin: [{type: Schema.Types.ObjectId, ref: 'MateJoin'}],
+    mateAccept: [{type: Schema.Types.ObjectId, ref: 'Mate'}],
+    mateDenined: [{type: Schema.Types.ObjectId, ref: 'Mate'}],
     mateRoom: [{type: Schema.Types.ObjectId, ref: 'MateRoom'}],
     // dress: [{type: Schema.Types.ObjectId, ref: 'Dress'}],
     // reportDress: [{type: Schema.Types.ObjectId, ref: 'Dress'}],

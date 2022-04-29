@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var mongoose = require('mongoose');
 
 var auth = require('../components/auth');
 var ModelMate = require('../models/model_mate');
@@ -93,7 +94,18 @@ router.post("/join/:mateId", auth.isSignIn, async (req, res) => {
     joinMate.member.push(req.decoded.id);
     
     joinMate.save()
-    .then((_) => res.json(response.success(_)))
+    .then((_) => {
+        ModelUser.findById(req.decoded.id)
+        .then(async (user) => {
+            user.mateJoin.unshift(_.id)
+            await user.save()
+            res.json(response.success(_))
+        })
+        .catch((_) => {
+            var error = convertException(_)
+            res.json(response.fail(error, error.errmsg, error.code))
+        });        
+    })
     .catch((_) => {
         var error = convertException(_)
         res.json(response.fail(error, error.errmsg, error.code))
@@ -173,6 +185,60 @@ async function getMateDetail(mateId) {
     });
 }
 
+router.get("/page/:page", auth.signCondition, (req, res) => {
+    ModelMate.find()
+    .skip(DBConst.PAGE_COUNT* req.params.page)
+    .limit(DBConst.PAGE_COUNT)
+    .sort({createdAt: -1})
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+router.get('/created/page/:page', auth.isSignIn, (req, res) => {
+    MateAggr.getMateDetail(
+        req.decoded.id, 
+        {
+            $and: [
+                {isShow: true},
+                {"owner._id": mongoose.Types.ObjectId(req.decoded.id)}
+            ]
+        },
+        req.params.page,
+        DBConst.PAGE_COUNT
+    )
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+router.get('/join/page/:page', auth.isSignIn, (req, res) => {
+    ModelMate.getMateDetail(
+        req.decoded.id, 
+        {
+            $and: [
+                {isShow: true},
+                {"member._id": mongoose.Types.ObjectId(req.decoded.id)}
+            ]
+        },
+        req.params.page,
+        DBConst.PAGE_COUNT,
+    )
+    .skip(DBConst.PAGE_COUNT* req.params.page)
+    .limit(DBConst.PAGE_COUNT)
+    .sort({createdAt: -1})
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+
 
 router.get("/search/tag/:tags", auth.signCondition, (req, res) => {
     ModelMate.find()
@@ -186,19 +252,6 @@ router.get("/search/tag/:tags", auth.signCondition, (req, res) => {
     });
 });
 
-
-
-router.get("/page/:page", auth.signCondition, (req, res) => {
-    ModelMate.find()
-    .skip(DBConst.PAGE_COUNT* req.params.page)
-    .limit(DBConst.PAGE_COUNT)
-    .sort({createdAt: -1})
-    .then((_) => res.json(response.success(_)))
-    .catch((_) => {
-        var error = convertException(_)
-        res.json(response.fail(error, error.errmsg, error.code))
-    });
-});
 
 
 

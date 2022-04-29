@@ -24,6 +24,66 @@ router.get('/me', auth.isSignIn, async function(req, res) {
     }
 });
 
+router.get('/detail/me', auth.isSignIn, async function(req, res) {
+
+    try {
+
+        var result = await ModelUser.findOne({
+            _id: mongoose.Types.ObjectId(req.decoded.id),
+        })
+        .populate([
+            {
+                path: 'mate',
+                populate: {
+                    path: "tags",
+                }             
+            },
+            {
+                path: 'mate',
+                populate: {
+                    path: "member",
+                    populate: [
+                        {
+                            path: "member",
+                            select: "_id nickName pictureMe"
+                        },
+                        {
+                            path: "joinMember",
+                            select: "_id nickName pictureMe"
+                        },
+                        {
+                            path: "deniedMember",
+                            select: "_id nickName pictureMe"
+                        },
+                    ]
+                },
+            },
+        ])
+        .populate([{
+            path: 'mateJoin',
+            populate: {
+                path: "member",
+                select: "_id nickName pictureMe"
+            },
+        },
+        {
+            path: 'mateJoin',
+            populate: {
+                path: "owner",
+                select: "_id nickName pictureMe"
+            },
+        },
+        ])
+        .populate('setting')
+        res.json(response.success(result));
+
+    } catch (err) {
+        var error = convertException(err)
+        res.json(response.fail(error, error.errmsg, error.code))
+    }
+});
+
+
 
 router.get('/check/nickName/:nickName',  async function(req, res) {
 
