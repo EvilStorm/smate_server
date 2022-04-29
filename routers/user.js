@@ -73,6 +73,17 @@ router.get('/detail/me', auth.isSignIn, async function(req, res) {
                 select: "_id nickName pictureMe"
             },
         },
+        {
+            path: 'mateJoin',
+            populate: {
+                path: "mate",
+                select: "_id images title message memberLimit locationStr mateDate tags",
+                populate: {
+                    path : "tags"
+                }
+            },
+        },
+
         ])
         .populate('setting')
         res.json(response.success(result));
