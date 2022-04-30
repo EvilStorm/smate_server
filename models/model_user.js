@@ -24,6 +24,7 @@ const schema = new Schema({
     mateAccept: [{type: Schema.Types.ObjectId, ref: 'Mate'}],
     mateDenined: [{type: Schema.Types.ObjectId, ref: 'Mate'}],
     mateRoom: [{type: Schema.Types.ObjectId, ref: 'MateRoom'}],
+    likeMate: [{type: Schema.Types.ObjectId, ref: 'Mate'}],
     // dress: [{type: Schema.Types.ObjectId, ref: 'Dress'}],
     // reportDress: [{type: Schema.Types.ObjectId, ref: 'Dress'}],
     // blockUser: [{type: Schema.Types.ObjectId, ref: 'User'}],

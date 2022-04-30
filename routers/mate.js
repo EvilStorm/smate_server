@@ -46,8 +46,8 @@ router.post("", auth.isSignIn, (req, res) => {
             {
                 owner: req.decoded.id,
                 mate: _.id,
-                member: [],
-                joinMember: [],
+                member: [req.decoded.id],
+                joinMember: [req.decoded.id],
                 deniedMember: [],
             }
         ).save();
@@ -55,7 +55,7 @@ router.post("", auth.isSignIn, (req, res) => {
         console.log( ` JOIN ID : ${mateJoin._id}`)
         var mate = await ModelMate.findById(_._id);
         mate.member = mateJoin._id;
-
+        
         await mate.save();
 
         console.log( ` SAVE : ${JSON.stringify(_)}`);

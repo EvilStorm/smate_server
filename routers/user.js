@@ -34,9 +34,15 @@ router.get('/detail/me', auth.isSignIn, async function(req, res) {
         .populate([
             {
                 path: 'mate',
-                populate: {
-                    path: "tags",
-                }             
+                populate: [
+                    {
+                        path: "tags",
+                    }, 
+                    {
+                        path: "owner",
+                        select: "_id nickName pictureMe"
+                    }, 
+                ]           
             },
             {
                 path: 'mate',

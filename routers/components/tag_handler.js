@@ -1,40 +1,40 @@
 var ModelTag = require('../../models/model_tag');
 var ModelTagUseMap = require('../../models/model_tag_use_map');
 var ModelTagUseMateMap = require('../../models/model_tag_use_mate_map');
-var ModelDress = require('../../models/model_dress');
+// var ModelDress = require('../../models/model_dress');
 var ModelMate = require('../../models/model_mate');
 
-async function postTags(dressId, userId, tags) {
-    if(tags == null) {
-        return null;
-    }
+// async function postTags(dressId, userId, tags) {
+//     if(tags == null) {
+//         return null;
+//     }
 
-    var modelDress = await ModelDress.findById(dressId);
+//     var modelDress = await ModelDress.findById(dressId);
 
-    for(var i=0; i<tags.length; i++) {
+//     for(var i=0; i<tags.length; i++) {
 
-        var tag = await ModelTag.findOne({tag: tags[i]});
-        if(tag == null) {
-            tag = ModelTag();
-            tag.tag = tags[i];
-        }
+//         var tag = await ModelTag.findOne({tag: tags[i]});
+//         if(tag == null) {
+//             tag = ModelTag();
+//             tag.tag = tags[i];
+//         }
 
-        tag.count++;
-        tag = await tag.save();
-        modelDress.tags.push(tag);
+//         tag.count++;
+//         tag = await tag.save();
+//         modelDress.tags.push(tag);
 
-        var tagmap = ModelTagUseMap();
-        tagmap.dress = dressId;
-        tagmap.user = userId;
-        tagmap.tag = tag.id;
-        tagmap.save()
+//         var tagmap = ModelTagUseMap();
+//         tagmap.dress = dressId;
+//         tagmap.user = userId;
+//         tagmap.tag = tag.id;
+//         tagmap.save()
 
-    }
+//     }
 
-    let result = modelDress.save();
+//     let result = modelDress.save();
 
-    return result;
-}
+//     return result;
+// }
 
 
 async function postTagsMate(mateId, userId, tags) {
@@ -75,6 +75,6 @@ async function postTagsMate(mateId, userId, tags) {
 }
 
 module.exports = {
-    postTags: postTags,
+    // postTags: postTags,
     postTagsMate: postTagsMate,
 }
