@@ -52,6 +52,7 @@ async function getMateDetail(uId, match={isShow: true}, page = 0, limitCount=DBC
                 mateDate: 1,
                 memberLimit: 1,
                 locationStr: 1,
+                createdAt: 1,
                 loc: 1,
                 isShow: 1,
                 images: 1,

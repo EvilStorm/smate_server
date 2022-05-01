@@ -6,6 +6,7 @@ var auth = require('../components/auth');
 var ModelMate = require('../models/model_mate');
 var TagHandler = require('./components/tag_handler');
 var ModelUser = require('../models/model_user');
+var ModelMateMyHistory = require('../models/model_mate_my_history');
 var ModelMateJoin = require('../models/model_mate_join');
 var ModelMateRoom = require('../models/model_mate_room');
 var response = require('../components/response_util');
@@ -17,6 +18,40 @@ var MateAggr = require('./components/mate_aggr');
 
 var FCMCreator = require('../components/fcm_message_creator');
 var FCMSender = require('../components/fcm_sender');
+const { populate } = require('../models/model_mate');
+
+
+const userBriefSelect = "_id nickName pictureMe";
+const matePopulate = [
+    {
+        path: 'member',
+        select: 'member',
+        populate: [
+            {
+                path: 'member',
+                select: userBriefSelect
+            },
+            {
+                path: 'joinMember',
+                select: userBriefSelect
+            },
+            {
+                path: 'deniedMember',
+                select: userBriefSelect
+            }
+
+        ]
+    },
+    {
+        path: 'owner',
+        select: userBriefSelect
+    },
+
+    {
+        path: 'tags'
+    },
+
+];
 
 router.get("/detail/:mateId", (req, res) => {
     MateAggr.getMate(req.params.mateId)
@@ -38,6 +73,10 @@ router.post("", auth.isSignIn, (req, res) => {
     ModelMate(data)
     .save()
     .then(async (_) => {
+        var history = await ModelMateMyHistory.findOne({owner: req.decoded.id});
+        history.created.unshift(_._id);
+        await history.save()
+
         var user = await ModelUser.findById(req.decoded.id);
         user.mate.unshift(_._id);
         await user.save();
@@ -94,7 +133,22 @@ router.post("/join/:mateId", auth.isSignIn, async (req, res) => {
     joinMate.member.push(req.decoded.id);
     
     joinMate.save()
-    .then((_) => {
+    .then(async (_) => {
+
+        var history = await ModelMateMyHistory.findOne({owner: req.decoded.id});
+        history.joined.unshift(req.params.mateId);
+        await history.save()
+
+        var owner = await ModelUser.findById(_.owner)
+            .populate('setting');
+
+        if(owner.setting.mateJoinAlarm) {
+            var message = await FCMCreator.createMessage(_.owner, FCMCreator.MessageType.MateJoin)
+            FCMSender.sendPush(message)
+        }
+
+
+
         ModelUser.findById(req.decoded.id)
         .then(async (user) => {
             user.mateJoin.unshift(_.id)
@@ -112,7 +166,17 @@ router.post("/join/:mateId", auth.isSignIn, async (req, res) => {
     });
 });
 
-router.post("/separate/:mateId", auth.isSignIn, async (req, res) => {
+router.post("/join/cancel/:mateId", auth.isSignIn, async (req, res) => {
+
+
+    var history = await ModelMateMyHistory.findOne({owner: req.decoded.id});
+    history.joined.indexOf(req.params.mateId);
+    if(index > -1) {
+        history.joined.splice(index, 1);
+    }
+    await history.save()
+
+
     var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
 
     const index = joinMate.member.indexOf(req.decoded.id);
@@ -135,6 +199,11 @@ router.post("/accept/:mateId", auth.isSignIn, async (req, res) => {
     joinMate
     .save()
     .then(async (_) => {
+        
+        var history = await ModelMateMyHistory.findOne({owner: req.body.joinMemberId});
+        history.joined.unshift(req.params.mateId);
+        await history.save()
+
 
         var room = await ModelMateRoom.findOne({mate: req.params.mateId});
         console.log(`mateId: ${req.params.mateId}/// Room: ${JSON.stringify(room)}`)
@@ -150,6 +219,14 @@ router.post("/accept/:mateId", auth.isSignIn, async (req, res) => {
 });
 
 router.post("/denied/:mateId", auth.isSignIn, async (req, res) => {
+
+
+
+    var history = await ModelMateMyHistory.findOne({owner: req.body.joinMemberId});
+    history.denied.unshift(req.params.mateId);
+    await history.save()
+
+
     var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
 
     joinMate.deniedMember.push(req.body.joinMemberId);
@@ -217,7 +294,7 @@ router.get('/created/page/:page', auth.isSignIn, (req, res) => {
 });
 
 router.get('/join/page/:page', auth.isSignIn, (req, res) => {
-    ModelMate.getMateDetail(
+    MateAggr.getMateDetail(
         req.decoded.id, 
         {
             $and: [
@@ -253,7 +330,83 @@ router.get("/search/tag/:tags", auth.signCondition, (req, res) => {
 });
 
 
+router.get('/me/created/:page',auth.isSignIn, (req, res) => {
 
+    ModelMateMyHistory.findOne({
+        owner: req.decoded.id
+    })
+    .populate([
+        {
+            path: 'created',
+            populate: matePopulate
+        },
+        {
+            path: 'owner',
+            select: userBriefSelect
+        },
+    ])
+    .skip(DBConst.PAGE_COUNT* req.params.page)
+    .limit(DBConst.PAGE_COUNT)
+    .sort({createdAt: -1})
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        console.log(_);
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+
+});
+
+router.get('/me/join/:page',auth.isSignIn, (req, res) => {
+    ModelMateMyHistory.findOne({
+        owner: req.decoded.id
+    })
+    .populate([
+        {
+            path: 'joined',
+            populate: matePopulate
+        },
+        {
+            path: 'owner',
+            select: userBriefSelect
+        },
+    ])
+    .skip(DBConst.PAGE_COUNT* req.params.page)
+    .limit(DBConst.PAGE_COUNT)
+    .sort({createdAt: -1})
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        console.log(_);
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+
+router.get('/me/like/:page',auth.isSignIn, (req, res) => {
+    ModelMateMyHistory.findOne({
+        owner: req.decoded.id
+    })
+    .populate([
+        {
+            path: 'liked',
+            populate: matePopulate
+        },
+        {
+            path: 'owner',
+            select: userBriefSelect
+        },
+    ])
+    .skip(DBConst.PAGE_COUNT* req.params.page)
+    .limit(DBConst.PAGE_COUNT)
+    .sort({createdAt: -1})
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        console.log(_);
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
 
 router.patch("/:_id", auth.isAdmin, (req, res) => {
     ModelMate.findByIdAndUpdate({_id: req.params._id}, {$set: req.body})

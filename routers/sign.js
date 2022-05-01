@@ -3,6 +3,7 @@ var router = express.Router();
 
 var ModelUser = require('../models/model_user');
 var ModelSetting = require('../models/model_setting');
+var ModelMateMyHistory = require('../models/model_mate_my_history');
 var mongoose = require('mongoose');
 var auth = require('../components/auth');
 var response = require('../components/response_util');
@@ -15,7 +16,7 @@ router.post('/signin', async function(req, res) {
         var user = await ModelUser.findOne({
             identifyId: req.body.identifyId
         })
-
+ 
         var userId = null
         if(user == null) {
             userId = await addAccountProcess(req.body)
@@ -36,7 +37,7 @@ router.post('/signin', async function(req, res) {
 
 async function addAccountProcess(data) {
     try {
-
+ 
         const user = new ModelUser(data);
         var userSaveResult = await user.save()
 
@@ -45,8 +46,15 @@ async function addAccountProcess(data) {
         var settingSaveResult = await setting.save()
         
         userSaveResult.setting = settingSaveResult._id
-        await userSaveResult.save()
 
+        var mateActions = new ModelMateMyHistory({
+            owner: userSaveResult._id
+        });
+
+        var actions = await mateActions.save();
+        userSaveResult.mateHistory = actions._id;
+    
+        await userSaveResult.save()
         return userSaveResult._id
     } catch (e) {
       return e;

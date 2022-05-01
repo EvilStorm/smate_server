@@ -4,6 +4,7 @@ const ModelMateRoom = require('../models/model_mate_room');
 const MessageType = {
     SYSTEM: 'system',
     ACTION: 'action',
+    MateJoin: 'mateJoin',
     REPLY: 'reply',
     LIKE: 'like',
     POSTING: 'posting',
@@ -33,6 +34,9 @@ async function createMessage(targetId, type) {
             return await createChatMessage(targetId, type);
         case MessageType.POSTING: 
             return await createPostingMessage(targetId, type);
+        case MessageType.MateJoin: 
+            return await createMateJoinMessage(targetId, type);
+            
     }
 }
 
@@ -129,6 +133,28 @@ async function createLikeMessage(targetId, msgType) {
         notification: {
             title: '스타일메이트',
             body: '내 스일을 좋아하는 분이 있나봐요. 하트하트!'
+        },
+        data:{
+            type: msgType
+        },
+        token: fcmToken
+    }
+
+    return pushInfos;
+
+}
+/**
+ * 메이트 참가 신청 알림  
+ * @param {Mate Object ID} targetId 
+ */
+async function createMateJoinMessage(targetId, msgType) {
+    var result = await ModelUser.findById(targetId);
+
+    var fcmToken = result.pushToken == null?  testToken: result.pushToken
+    const pushInfos = {
+        notification: {
+            title: '스타일메이트',
+            body: '내 메이트에 참가 신청한 사람이 있습니다.'
         },
         data:{
             type: msgType

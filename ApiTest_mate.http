@@ -4,18 +4,30 @@ content-type: application/json
 identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
 userId: 6256d1101014841df59a4975
 
+//Test01
+# identifyId: 2YQe8iVMtUMK4S8nSf3xwdEf6Nd2
+# userId: 626e7bed84af6260aeb8d8d6
+//Test02
+# identifyId: u3bCWQjSnygYP23WDxEQHk4Fxoq1
+# userId: 626e7c0084af6260aeb8d8e7
+//Test03
+# identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+# userId: 626e7c1584af6260aeb8d8f8
+
+
 ###
 POST http://localhost:2394/api/mate
 content-type: application/json
-identifyId: YoBzWK7RcxT47EIboAAayWydup22
-userId: 626a21e24dd6978e07e8754e
+identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+userId: 626e7c1584af6260aeb8d8f8
 
 {
     "images": ["https://firebasestorage.googleapis.com/v0/b/shoppingmate-652c6.appspot.com/o/sample_female_dendy_1.jpeg?alt=media&token=b47c1748-9763-43e7-b006-70ec360fdd19", "https://firebasestorage.googleapis.com/v0/b/shoppingmate-652c6.appspot.com/o/sample_female_over_fit_1.jpeg?alt=media&token=6496575b-fd3e-4a7c-a6fc-9ec483821a60"],
-    "title": "가자 쇼핑하러333322",
-    "message": "가가자자자자자 쇼핑하고 맛있는 맛집도 들러요. #봄날씨 #데이트 #맛집",
-    "locationStr": "동묘 구재시장",
-    "tags": ["봄날씨", "데이트", "맛집"]
+    "title": "여름 옷 사러 가실분?",
+    "message": "여름 오기전에 여름옷 쇼핑하실 분 #여름 #압구정 #샤랄라",
+    "locationStr": "압구정",
+    "mateDate": "2022-05-14T14:00:00",
+    "tags": ["여름", "압구정", "샤랄라"]
 }
 
 ###
@@ -32,7 +44,7 @@ userId: 6256d1101014841df59a4975
 
 
 ###
-POST http://localhost:2394/api/mate/join/625d748a59a35aad7f4b1cd0
+POST http://localhost:2394/api/mate/join/626e8ae2cc7207d80b6a81a4
 content-type: application/json
 identifyId: EsZsHQSNwGbfVvTvYagqs0Snxrz2
 userId: 625ad4ac1014841df59a4a25
@@ -90,3 +102,69 @@ content-type: application/json
 identifyId: EsZsHQSNwGbfVvTvYagqs0Snxrz2
 userId: 625ad4ac1014841df59a4a25
 
+
+###
+GET http://localhost:2394/api/mate/me/created/0
+content-type: application/json
+identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+userId: 626e7c1584af6260aeb8d8f8
+
+###
+GET http://localhost:2394/api/mate/me/join/0
+content-type: application/json
+identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+userId: 626e7c1584af6260aeb8d8f8
+
+###
+GET http://localhost:2394/api/mate/me/like/0
+content-type: application/json
+identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+userId: 626e7c1584af6260aeb8d8f8
+
+
+//Test01
+# identifyId: 2YQe8iVMtUMK4S8nSf3xwdEf6Nd2
+# userId: 626e7bed84af6260aeb8d8d6
+//Test02
+# identifyId: u3bCWQjSnygYP23WDxEQHk4Fxoq1
+# userId: 626e7c0084af6260aeb8d8e7
+//Test03
+# identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+# userId: 626e7c1584af6260aeb8d8f8
+
+
+###
+POST http://localhost:2394/api/mate/join/626e8764cc7207d80b6a8175
+content-type: application/json
+identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+userId: 626e7c1584af6260aeb8d8f8
+
+
+###
+POST http://localhost:2394/api/mate
+content-type: application/json
+identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
+userId: 626e7c1584af6260aeb8d8f8
+
+{
+    "images": ["https://firebasestorage.googleapis.com/v0/b/shoppingmate-652c6.appspot.com/o/sample_female_over_fit_1.jpeg?alt=media&token=6496575b-fd3e-4a7c-a6fc-9ec483821a60"],
+    "title": "홍대 한바퀴 합시다.",
+    "message": "스트릿 패션으로 쇼핑하려고 합니다. 어서오세요!! #스트리트 #홍대 #맛집도",
+    "locationStr": "압구정",
+    "mateDate": "2022-05-04T13:00:00",
+    "tags": ["스트리트", "홍대", "맛집도"]
+}
+###
+POST http://localhost:2394/api/mate
+content-type: application/json
+identifyId: u3bCWQjSnygYP23WDxEQHk4Fxoq1
+userId: 626e7c0084af6260aeb8d8e7
+
+{
+    "images": ["https://firebasestorage.googleapis.com/v0/b/shoppingmate-652c6.appspot.com/o/sample_female_semi_formal_1.jpeg?alt=media&token=354888d8-4c72-42e2-acc1-9b5b58b51344"],
+    "title": "동대문 가실분",
+    "message": "저는 러블리한 스타일을 좋아합니다. 그런 곳을 많이 알고 있으니 같이 가실분? #러블리 #하늘하늘 #핑크 #브라우스",
+    "locationStr": "압구정",
+    "mateDate": "2022-05-07T13:00:00",
+    "tags": ["러블리","하늘하늘", "핑크", "브라우스"]
+}

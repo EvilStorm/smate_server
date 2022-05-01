@@ -19,6 +19,7 @@ const schema = new Schema({
     pushToken: {type: String, default: null},
     // hasAward: {type: Number, default: 0},
     setting: {type: Schema.Types.ObjectId, ref: 'Setting', default:null},
+    mateHistory: {type: Schema.Types.ObjectId, ref: 'MateMyHistory', default:null},
     mate: [{type: Schema.Types.ObjectId, ref: 'Mate'}],
     mateJoin: [{type: Schema.Types.ObjectId, ref: 'MateJoin'}],
     mateAccept: [{type: Schema.Types.ObjectId, ref: 'Mate'}],

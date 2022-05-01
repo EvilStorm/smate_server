@@ -7,6 +7,9 @@ const schema = new Schema({
     replyAlarm:  {type: Boolean, default: true},
     systemAlarm: {type: Boolean, default: true},
     emailSend: {type: Boolean, default: true},
+    mateJoinAlarm: {type: Boolean, default: true},
+    mateAcceptAlarm: {type: Boolean, default: true},
+    messageAlarm: {type: Boolean, default: true},
     createdAt: {type: Date, default: Date.now, select: false},
 }, {
     versionKey: false // You should be aware of the outcome after set to false
