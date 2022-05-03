@@ -264,14 +264,26 @@ async function getMateDetail(mateId) {
 
 router.get("/page/:page", auth.signCondition, (req, res) => {
     ModelMate.find()
+    .populate(matePopulate)
     .skip(DBConst.PAGE_COUNT* req.params.page)
     .limit(DBConst.PAGE_COUNT)
     .sort({createdAt: -1})
     .then((_) => res.json(response.success(_)))
     .catch((_) => {
+        console.log(_);
         var error = convertException(_)
         res.json(response.fail(error, error.errmsg, error.code))
     });
+
+    // ModelMate.find()
+    // .skip(DBConst.PAGE_COUNT* req.params.page)
+    // .limit(DBConst.PAGE_COUNT)
+    // .sort({createdAt: -1})
+    // .then((_) => res.json(response.success(_)))
+    // .catch((_) => {
+    //     var error = convertException(_)
+    //     res.json(response.fail(error, error.errmsg, error.code))
+    // });
 });
 
 router.get('/created/page/:page', auth.isSignIn, (req, res) => {

@@ -1,8 +1,8 @@
 ###
 GET http://localhost:2394/api/mate/page/0
 content-type: application/json
-identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
-userId: 6256d1101014841df59a4975
+# identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
+# userId: 6256d1101014841df59a4975
 
 //Test01
 # identifyId: 2YQe8iVMtUMK4S8nSf3xwdEf6Nd2
