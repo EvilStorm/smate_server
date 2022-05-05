@@ -44,6 +44,19 @@ router.get("/all", (req, res) => {
     });
 });
 
+router.get("/hot", (req, res) => {
+    ModelTag.find()
+    .sort({count: -1})
+    .limit(20)
+    .exec()
+    .then((_) => res.json(response.success(_)))
+    .catch((_) => {
+        var error = convertException(_)
+        res.json(response.fail(error, error.errmsg, error.code))
+    });
+});
+
+
 router.get("/tagMap", (req, res) => {
     ModelTagUseMap.find()
     .sort({createdAt: -1})
