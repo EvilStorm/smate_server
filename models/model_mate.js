@@ -7,6 +7,8 @@ const schema = new Schema({
     title: {type: String},
     message: {type: String},
     memberLimit: {type: Number, default: 4},
+    minAge: {type: Number, default: 0},
+    maxAge: {type: Number, default: 0},
     member: {type: Schema.Types.ObjectId, ref: 'MateJoin'},
     locationStr: {type: String},
     mateDate: {type: Date, default: Date.now},

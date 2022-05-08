@@ -54,12 +54,16 @@ const matePopulate = [
 ];
 
 router.get("/detail/:mateId", (req, res) => {
-    MateAggr.getMate(req.params.mateId)
+    ModelMate.findById(req.params.mateId)
+    .populate(matePopulate)
     .then((_) => res.json(response.success(_)))
     .catch((_) => {
+        console.log(_);
         var error = convertException(_)
         res.json(response.fail(error, error.errmsg, error.code))
     });
+
+
 });
 router.post("", auth.isSignIn, (req, res) => {
     console.log(req.body);
@@ -124,18 +128,22 @@ router.post("", auth.isSignIn, (req, res) => {
     });
 });
 
-router.post("/join/:mateId", auth.isSignIn, async (req, res) => {
+/**
+ * 참가 신청 
+ */
+router.post("/apply/:mateId", auth.isSignIn, async (req, res) => {
     // var mate = await ModelMate.findById(req.params.mateId);
     // mate.member.push(req.decoded.id);
     // mate
-
+    console.log(`req.decoded.id: ${req.decoded.id}`);
     var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
     joinMate.member.push(req.decoded.id);
     
     joinMate.save()
     .then(async (_) => {
 
-        var history = await ModelMateMyHistory.findOne({owner: req.decoded.id});
+        console.log(`ID: ${req.decoded.id}`);
+        var history = await ModelMateMyHistory.findOne({owner: mongoose.Types.ObjectId(req.decoded.id)});
         history.joined.unshift(req.params.mateId);
         await history.save()
 
@@ -166,13 +174,15 @@ router.post("/join/:mateId", auth.isSignIn, async (req, res) => {
     });
 });
 
-router.post("/join/cancel/:mateId", auth.isSignIn, async (req, res) => {
-
+/**
+ * 참가 신청취소(참가 신청자가 취소)
+ */
+router.post("/apply/cancel/:mateId", auth.isSignIn, async (req, res) => {
 
     var history = await ModelMateMyHistory.findOne({owner: req.decoded.id});
-    history.joined.indexOf(req.params.mateId);
-    if(index > -1) {
-        history.joined.splice(index, 1);
+    const historyIndex = history.joined.indexOf(req.params.mateId);
+    if(historyIndex > -1) {
+        history.joined.splice(historyIndex, 1);
     }
     await history.save()
 
@@ -192,6 +202,9 @@ router.post("/join/cancel/:mateId", auth.isSignIn, async (req, res) => {
     });
 });
 
+/**
+ * 메이트 참가 허락 
+ */
 router.post("/accept/:mateId", auth.isSignIn, async (req, res) => {
     var joinMate = await ModelMateJoin.findOne({mate: req.params.mateId});
     joinMate.joinMember.push(req.body.joinMemberId);
@@ -217,6 +230,31 @@ router.post("/accept/:mateId", auth.isSignIn, async (req, res) => {
         res.json(response.fail(error, error.errmsg, error.code))
     });
 });
+
+/**
+ * 매이트 참가 취소(메이트 주인이 취소)
+ */
+router.post("/accept/cancel/:mateId", auth.isSignIn, async (req, res) => {
+    try {
+        var mateJoin = await ModelMateJoin.findOne({mate: req.params.mateId});
+        var index = mateJoin.joinMember.indexOf(req.body.userId);
+        mateJoin.joinMember.splice(index, 1);
+        await mateJoin.save()
+    
+        var history = await ModelMateMyHistory.findOne({owner: req.body.userId});
+        var index2 = history.joined.indexOf(req.params.mateId);
+        history.joined.splice(index2, 1);
+        await history.save()
+    
+        res.json(response.success({result:1}));
+    } catch (e) {
+        var error = convertException(e)
+        res.json(response.fail(error, error.errmsg, error.code))
+    }
+
+
+});
+
 
 router.post("/denied/:mateId", auth.isSignIn, async (req, res) => {
 
@@ -247,17 +285,25 @@ router.post("/denied/:mateId", auth.isSignIn, async (req, res) => {
 async function getMateDetail(mateId) {
     const id = mateId;
     return new Promise((resolve, reject) => {
-        try {
-            ModelMate.findById(id)
-            .then((_) => {
-                console.log(`_____: ${JSON.stringify(_)}`)
-                return resolve(_)
-            })
-            .catch((_) => reject());
-        }catch (e) {
-            console.log(e);
-            reject();
-        }
+
+        ModelMate.findById(id)
+        .populate(matePopulate)
+        .then((_) => resolve(_))
+        .catch((_) => {
+            reject(_)
+        });
+
+        // try {
+        //     ModelMate.findById(id)
+        //     .then((_) => {
+        //         console.log(`_____: ${JSON.stringify(_)}`)
+        //         return resolve(_)
+        //     })
+        //     .catch((_) => reject());
+        // }catch (e) {
+        //     console.log(e);
+        //     reject();
+        // }
 
     });
 }

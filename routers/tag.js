@@ -205,7 +205,7 @@ router.get("/search/word/:word/mate/:page", auth.signCondition, (req, res) => {
 router.post('', (req, res) => {
     ModelTag.find({tag: req.body.tags})
     .then(_ => {
-        
+        res.json(response.success(_));
     })
     .catch((err) => res.json(response.successFalse(err)));
 });

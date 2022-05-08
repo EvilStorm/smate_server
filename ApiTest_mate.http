@@ -18,16 +18,17 @@ content-type: application/json
 ###
 POST http://localhost:2394/api/mate
 content-type: application/json
-identifyId: 6aGMeuLgbSdQlSW6TPOTf3OoEA12
-userId: 626e7c1584af6260aeb8d8f8
+identifyId: 2YQe8iVMtUMK4S8nSf3xwdEf6Nd2
+userId: 626e7bed84af6260aeb8d8d6
 
 {
     "images": ["https://firebasestorage.googleapis.com/v0/b/shoppingmate-652c6.appspot.com/o/sample_female_dendy_1.jpeg?alt=media&token=b47c1748-9763-43e7-b006-70ec360fdd19", "https://firebasestorage.googleapis.com/v0/b/shoppingmate-652c6.appspot.com/o/sample_female_over_fit_1.jpeg?alt=media&token=6496575b-fd3e-4a7c-a6fc-9ec483821a60"],
-    "title": "여름 옷 사러 가실분?",
-    "message": "여름 오기전에 여름옷 쇼핑하실 분 #여름 #압구정 #샤랄라",
-    "locationStr": "압구정",
-    "mateDate": "2022-05-14T14:00:00",
-    "tags": ["여름", "압구정", "샤랄라"]
+    "title": "관악산 출발합니다.",
+    "message": "관악산 짧은 코스 약 2시간 정도 걸립니.",
+    "locationStr": "화곡동",
+    "mateDate": "2022-05-24T14:00:00",
+    "tags": ["관악산", "등산", "2시간"]
+    
 }
 
 ###
@@ -42,12 +43,13 @@ content-type: application/json
 identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
 userId: 6256d1101014841df59a4975
 
-
+# identifyId: u3bCWQjSnygYP23WDxEQHk4Fxoq1
+# userId: 626e7c0084af6260aeb8d8e7
 ###
-POST http://localhost:2394/api/mate/join/626e8ae2cc7207d80b6a81a4
+POST http://localhost:2394/api/mate/join/62766ea1564d6cda974e4169
 content-type: application/json
-identifyId: EsZsHQSNwGbfVvTvYagqs0Snxrz2
-userId: 625ad4ac1014841df59a4a25
+identifyId: u3bCWQjSnygYP23WDxEQHk4Fxoq1
+userId: 626e7c0084af6260aeb8d8e7
 
 
 ###
@@ -57,7 +59,7 @@ identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
 userId: 6256d1101014841df59a4975
 
 ###
-POST http://localhost:2394/api/mate/accept/625d748a59a35aad7f4b1cd0
+POST http://localhost:2394/api/mate/accept/626e7c0084af6260aeb8d8e7
 content-type: application/json
 identifyId: uJyZ1KPQpsTFuTcAAOwOZDRYhfu1
 userId: 6256d1101014841df59a4975
